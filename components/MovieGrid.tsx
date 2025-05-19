@@ -5,7 +5,7 @@ import { Movie } from '@/types/movie'
 import MovieCard from './MovieCard'
 import { MovieList } from '@/types/movie'
 import MovieSorting from './MovieSorting'
-import { sortMovies } from '@/lib/utils'
+import { sortMovies, removeDuplicateMovies } from '@/lib/utils'
 
 interface MovieGridProps {
   initialMovies: Movie[]
@@ -36,13 +36,16 @@ export default function MovieGrid({
       })
     )
     setMovies(prev =>
-      sortMovies([...prev, ...pageResults.flat()], sorting.value)
+      sortMovies(
+        removeDuplicateMovies([...prev, ...pageResults.flat()]),
+        sorting.value
+      )
     )
   }
 
   const handleSortingChange = (option: { value: string; label: string }) => {
     setSorting(option)
-    setMovies(prev => sortMovies(prev, option.value))
+    setMovies(prev => sortMovies(removeDuplicateMovies(prev), option.value))
   }
 
   useEffect(() => {
@@ -67,7 +70,10 @@ export default function MovieGrid({
             const nextPage = pageRef.current + 1
             const response: MovieList = await onLoadMore(nextPage)
             setMovies(prev =>
-              sortMovies([...prev, ...response.results], sorting.value)
+              sortMovies(
+                removeDuplicateMovies([...prev, ...response.results]),
+                sorting.value
+              )
             )
             pageRef.current = nextPage
           } catch (error) {

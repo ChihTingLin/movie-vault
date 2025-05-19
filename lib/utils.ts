@@ -65,3 +65,9 @@ export const sortMovies = (movies: Movie[], sorting: string) => {
       return movies
   }
 }
+
+export const removeDuplicateMovies = (movies: Movie[]) => {
+  return movies.filter(
+    (movie, index, self) => index === self.findIndex(t => t.id === movie.id)
+  )
+}
