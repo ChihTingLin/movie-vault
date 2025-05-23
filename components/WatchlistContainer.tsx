@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react'
 import { sortMovies } from '@/lib/utils'
 import { useWatchlist } from '@/contexts/WatchlistContext'
 import MovieRoulette from './MovieRoulette'
-import clsx from 'clsx'
 
 export default function WatchlistContainer() {
   const { movieDetails, loading, getWatchlistDetails } = useWatchlist()
