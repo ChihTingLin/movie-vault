@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { sortMovies } from '@/lib/utils'
 import { useWatchlist } from '@/contexts/WatchlistContext'
 import MovieRoulette from './MovieRoulette'
+import clsx from 'clsx'
 
 export default function WatchlistContainer() {
   const { movieDetails, loading, getWatchlistDetails } = useWatchlist()
@@ -44,9 +45,11 @@ export default function WatchlistContainer() {
         <p className='text-center'>您的待看清單目前是空的。</p>
       )}
       <div className='flex justify-between items-center mb-4'>
-        {!loading && movieDetails.length > 0 && (
-          <MovieRoulette movies={movieDetails} />
-        )}
+        <div>
+          {!loading && movieDetails.length > 0 && (
+            <MovieRoulette movies={movieDetails} />
+          )}
+        </div>
         {sortMovies.length > 0 && (
           <MovieFilter
             selectedSorting={selectedSorting}

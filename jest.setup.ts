@@ -36,6 +36,10 @@ const localStorageMock = (function () {
 })()
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+jest.mock('@/lib/tmdb', () => ({
+  getMovieDetails: jest.fn().mockResolvedValue(mockMovie),
+  getMovieReviews: jest.fn().mockResolvedValue([]),
+}))
 
 beforeEach(() => {
   localStorageMock.clear()

@@ -111,9 +111,13 @@ export default function MovieGrid({
       <div
         ref={observerTarget}
         className='h-20 flex items-center justify-center'
+        data-testid='movie-grid'
       >
         {isLoading && (
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary' />
+          <div
+            className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'
+            data-testid='movie-loading'
+          />
         )}
       </div>
     </>

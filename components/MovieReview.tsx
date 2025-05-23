@@ -9,13 +9,13 @@ export default function MovieReview({ review }: { review: MovieReviewType }) {
   return (
     <div className='border border-gray-200 shadow-sm rounded-md p-4 mb-4'>
       <div>{review.author}</div>
-      <div
+      <p
         className={clsx('text-gray-400 line-clamp-3', {
           'line-clamp-none': isExpanded,
         })}
       >
         {review.content}
-      </div>
+      </p>
       <div className='flex justify-end'>
         <Button
           size='sm'

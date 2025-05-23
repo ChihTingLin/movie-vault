@@ -74,3 +74,19 @@ export const mockMovies: Movie[] = [
     added_at: '2025-04-12',
   },
 ]
+
+export const mockMovieReview = {
+  author: 'The Movie Mob',
+  author_details: {
+    name: 'The Movie Mob',
+    username: 'mooney240',
+    avatar_path: '/blEC280vq31MVaDcsWBXuGOsYnB.jpg',
+    rating: 7,
+  },
+  content:
+    "**Mission: Impossible - Dead Reckoning (Part One) boasts some of cinema's most stunning stunt work, but it came at the cost of character development and a solid story.**\r\n\r\nMan…. I wish I loved this movie more than I did. Don't get me wrong, it's a solid action movie with jaw-dropping stunts (some of the best in the series), but as a Mission: Impossible movie, it felt like a small step backward for the franchise. Fallout had mind-blowing action sequences and stunt work, along with developing Ethan's relationship with Ilsa, providing closure with Julia, showing the lengths Ethan would go to protect those closest to him, and battling an imposing villain. Dead Reckoning: Part One stretches the movie across two films only to seemingly showcase action spectacle after action spectacle while sacrificing character development. Characters I have grown to love over a decade of films felt sidelined, ignored, or wasted. Hayley Atwell's new character chewed up most of the screen time, and while she was fantastic, I wanted to see more of the original team. The new villain had an inconsistent ability that confused more than intimidated. There were some important emotional moments that I just didn't feel the weight of when I definitely should have. Part Two might tie everything together and make me enjoy Part One more in retrospect, but unfortunately, I left wanting more from this one.",
+  created_at: '2023-07-12T05:24:21.317Z',
+  id: '64ae3905d6590b00c7acf53f',
+  updated_at: '2023-07-12T05:24:21.415Z',
+  url: 'https://www.themoviedb.org/review/64ae3905d6590b00c7acf53f',
+}
