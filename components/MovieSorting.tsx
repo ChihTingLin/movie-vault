@@ -25,10 +25,7 @@ export default function MovieSorting({
         <div
           className={clsx(
             'flex items-center gap-2 px-2 py-1 cursor-pointer w-50',
-            'border border-gray-700 rounded-md',
-            {
-              'bg-gray-700': selectedSorting.value === 'popularity.desc',
-            }
+            'border border-gray-700 rounded-md'
           )}
         >
           <FilterIcon className='w-4 h-4' />

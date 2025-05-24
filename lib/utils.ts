@@ -27,8 +27,14 @@ export const toBase64 = (str: string) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str)
 
-export const sortMovies = (movies: Movie[], sorting: string) => {
+export const sortMovies = (
+  movies: Movie[],
+  sorting: string,
+  originalMovieIds: number[]
+): Movie[] => {
   switch (sorting) {
+    case '':
+      return originalMovieIds.map(id => movies.find(m => m.id === id))
     case 'added_at_latest':
       return movies.sort(
         (a, b) =>

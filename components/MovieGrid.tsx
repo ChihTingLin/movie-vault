@@ -6,6 +6,7 @@ import MovieCard from './MovieCard'
 import { MovieList } from '@/types/movie'
 import MovieSorting from './MovieSorting'
 import { sortMovies, removeDuplicateMovies } from '@/lib/utils'
+import { options } from '@/lib/constants/sorting'
 
 interface MovieGridProps {
   initialMovies: Movie[]
@@ -19,42 +20,30 @@ export default function MovieGrid({
   onLoadMore,
 }: MovieGridProps) {
   const [movies, setMovies] = useState<Movie[]>(initialMovies || [])
-  const [sorting, setSorting] = useState<{ label: string; value: string }>({
-    label: '上映時間 (由新到舊)',
-    value: 'release_date_latest',
-  })
+  const [originalMovieIds, setOriginalMovieIds] = useState<number[]>(
+    initialMovies.map(m => m.id) || []
+  )
+  const [sorting, setSorting] = useState<{ label: string; value: string }>(
+    options[0]
+  )
   const pageRef = useRef(1)
   const [isLoading, setIsLoading] = useState(false)
   const observerTarget = useRef<HTMLDivElement>(null)
 
-  const initialLoading = async () => {
-    const pageResults = await Promise.all(
-      Array.from({ length: totalPages >= 3 ? 2 : 1 }).map(async (_, index) => {
-        const page = await onLoadMore(index + 2)
-        pageRef.current = index + 2
-        return page.results
-      })
-    )
-    setMovies(prev =>
-      sortMovies(
-        removeDuplicateMovies([...prev, ...pageResults.flat()]),
-        sorting.value
-      )
-    )
-  }
-
   const handleSortingChange = (option: { value: string; label: string }) => {
     setSorting(option)
-    setMovies(prev => sortMovies(removeDuplicateMovies(prev), option.value))
+    const newMovies = sortMovies(
+      removeDuplicateMovies(movies),
+      option.value,
+      originalMovieIds
+    )
+    setMovies(newMovies)
   }
 
   useEffect(() => {
     setMovies(initialMovies)
+    setOriginalMovieIds(initialMovies.map(m => m.id))
     pageRef.current = 1
-    if (totalPages > 1) {
-      initialLoading()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMovies])
 
   useEffect(() => {
@@ -72,9 +61,14 @@ export default function MovieGrid({
             setMovies(prev =>
               sortMovies(
                 removeDuplicateMovies([...prev, ...response.results]),
-                sorting.value
+                sorting.value,
+                originalMovieIds
               )
             )
+            setOriginalMovieIds([
+              ...originalMovieIds,
+              ...response.results.map(m => m.id),
+            ])
             pageRef.current = nextPage
           } catch (error) {
             console.error('Failed to load more movies:', error)
