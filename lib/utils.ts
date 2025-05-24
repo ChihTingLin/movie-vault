@@ -34,7 +34,9 @@ export const sortMovies = (
 ): Movie[] => {
   switch (sorting) {
     case '':
-      return originalMovieIds.map(id => movies.find(m => m.id === id))
+      return originalMovieIds
+        .map(id => movies.find(m => m.id === id))
+        .filter(Boolean) as Movie[]
     case 'added_at_latest':
       return movies.sort(
         (a, b) =>

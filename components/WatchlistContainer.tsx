@@ -9,7 +9,8 @@ import { useWatchlist } from '@/contexts/WatchlistContext'
 import MovieRoulette from './MovieRoulette'
 
 export default function WatchlistContainer() {
-  const { movieDetails, loading, getWatchlistDetails } = useWatchlist()
+  const { movieDetails, loading, getWatchlistDetails, watchlist } =
+    useWatchlist()
   const [selectedSorting, setSelectedSorting] = useState<{
     label: string
     value: string
@@ -18,10 +19,13 @@ export default function WatchlistContainer() {
     value: 'added_at_latest',
   })
   const [sortedMovies, setSortedMovies] = useState<Movie[]>([])
+  const originalMovieIds = watchlist.map(m => m.id)
 
   const handleSortingChange = (sorting: { label: string; value: string }) => {
     setSelectedSorting(sorting)
-    setSortedMovies(movies => sortMovies(movies, sorting.value))
+    setSortedMovies(movies =>
+      sortMovies(movies, sorting.value, originalMovieIds)
+    )
   }
 
   useEffect(() => {
@@ -32,7 +36,9 @@ export default function WatchlistContainer() {
   }, [getWatchlistDetails, setSortedMovies])
 
   useEffect(() => {
-    setSortedMovies(sortMovies(movieDetails, selectedSorting.value))
+    setSortedMovies(
+      sortMovies(movieDetails, selectedSorting.value, originalMovieIds)
+    )
   }, [movieDetails, selectedSorting])
 
   return (
