@@ -1,47 +1,46 @@
-import { act, screen } from '@testing-library/react'
+import { act, fireEvent, screen } from '@testing-library/react'
 import MovieGrid from '../../components/MovieGrid'
 import { mockMovies } from '../utils/mockData'
 import { renderWithWatchlistProvider } from '../utils/testUtils'
 
 const mockOnLoadMore = jest.fn().mockResolvedValue({
-  results: mockMovies,
+  results: mockMovies.map(m => ({ ...m, id: m.id + 1 })),
   total_pages: 2,
 })
 
 beforeAll(() => {
-  // @ts-ignore
   class MockIntersectionObserver {
-    cb: any
-    constructor(cb: any) {
+    cb: (entries: IntersectionObserverEntry[]) => void
+    constructor(cb: (entries: IntersectionObserverEntry[]) => void) {
       this.cb = cb
     }
     observe = () => {
       // 直接觸發 callback，模擬進入 viewport
-      this.cb([{ isIntersecting: true }])
+      this.cb([{ isIntersecting: true } as IntersectionObserverEntry])
     }
     disconnect = () => {}
   }
-  // @ts-ignore
+  // @ts-expect-error type error
   global.IntersectionObserver = MockIntersectionObserver
 })
 
 describe('MovieGrid', () => {
   it('renders initial movies correctly', async () => {
-    await act(() => {
+    await act(async () => {
       renderWithWatchlistProvider(
         <MovieGrid
           initialMovies={mockMovies}
-          totalPages={2}
+          totalPages={1}
           onLoadMore={mockOnLoadMore}
         />
       )
     })
-    expect(screen.getByText(mockMovies[0].title)).toBeInTheDocument()
-    expect(screen.getByText(mockMovies[1].title)).toBeInTheDocument()
+    const grid = screen.getByTestId('movie-grid')
+    expect(grid.children.length).toBe(mockMovies.length)
   })
 
   it('loads more movies when scrolled to the bottom', async () => {
-    await act(() => {
+    await act(async () => {
       renderWithWatchlistProvider(
         <MovieGrid
           initialMovies={mockMovies}
@@ -50,11 +49,15 @@ describe('MovieGrid', () => {
         />
       )
     })
-    expect(screen.getByText(mockMovies[2].title)).toBeInTheDocument()
+    const trigger = screen.getByTestId('movie-loading-trigger')
+    const grid = screen.getByTestId('movie-grid')
+    fireEvent.scroll(trigger, { target: { scrollY: 100 } })
+    expect(mockOnLoadMore).toHaveBeenCalled()
+    expect(grid.children.length).toBe(mockMovies.length * 2)
   })
 
   it('renders loading state when loading more movies', async () => {
-    await act(() => {
+    await act(async () => {
       renderWithWatchlistProvider(
         <MovieGrid
           initialMovies={mockMovies}

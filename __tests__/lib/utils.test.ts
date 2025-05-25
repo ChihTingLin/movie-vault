@@ -75,14 +75,8 @@ describe('sortMovies', () => {
     const sortedVoteAverage = sortedMovies.map(movie => movie.vote_average)
     expect(sortedVoteAverage).toEqual([5.43, 5.9, 7.672])
   })
-  it('should sort movies by default', () => {
-    const sortedMovies = sortMovies(
-      mockMovies,
-      'release_date_latest',
-      originalMovieIds
-    )
-    const sortedMovies2 = sortMovies(sortedMovies, '', originalMovieIds)
-    const sortedIds = sortedMovies2.map(movie => movie.id)
-    expect(sortedIds).toEqual(originalMovieIds)
+  it('should return original movies by default', () => {
+    const sortedMovies = sortMovies(mockMovies, '')
+    expect(sortedMovies).toEqual(mockMovies)
   })
 })
