@@ -30,13 +30,15 @@ export const toBase64 = (str: string) =>
 export const sortMovies = (
   movies: Movie[],
   sorting: string,
-  originalMovieIds: number[]
+  originalMovieIds?: number[]
 ): Movie[] => {
   switch (sorting) {
     case '':
       return originalMovieIds
-        .map(id => movies.find(m => m.id === id))
-        .filter(Boolean) as Movie[]
+        ? originalMovieIds
+            .map(id => movies.find((m: Movie) => m.id === id))
+            .filter(m => !!m)
+        : movies
     case 'added_at_latest':
       return movies.sort(
         (a, b) =>

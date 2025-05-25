@@ -58,17 +58,16 @@ export default function MovieGrid({
           try {
             const nextPage = pageRef.current + 1
             const response: MovieList = await onLoadMore(nextPage)
-            setMovies(prev =>
-              sortMovies(
-                removeDuplicateMovies([...prev, ...response.results]),
-                sorting.value,
-                originalMovieIds
-              )
-            )
             setOriginalMovieIds([
               ...originalMovieIds,
               ...response.results.map(m => m.id),
             ])
+            setMovies(prev =>
+              sortMovies(
+                removeDuplicateMovies([...prev, ...response.results]),
+                sorting.value
+              )
+            )
             pageRef.current = nextPage
           } catch (error) {
             console.error('Failed to load more movies:', error)
@@ -96,7 +95,10 @@ export default function MovieGrid({
           onSortingChange={handleSortingChange}
         />
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+      <div
+        className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4'
+        data-testid='movie-grid'
+      >
         {movies?.map((movie, i) => (
           <MovieCard key={`${movie.id}-${i}`} movie={movie} />
         ))}
@@ -105,7 +107,7 @@ export default function MovieGrid({
       <div
         ref={observerTarget}
         className='h-20 flex items-center justify-center'
-        data-testid='movie-grid'
+        data-testid='movie-loading-trigger'
       >
         {isLoading && (
           <div
