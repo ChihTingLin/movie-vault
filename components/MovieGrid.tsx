@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Movie } from '@/types/movie'
 import MovieCard from './MovieCard'
 import { MovieList } from '@/types/movie'
 import MovieSorting from './MovieSorting'
-import { sortMovies, removeDuplicateMovies } from '@/lib/utils'
+import { sortMovies } from '@/lib/utils'
 import { options } from '@/lib/constants/sorting'
 
 interface MovieGridProps {
@@ -29,15 +29,13 @@ export default function MovieGrid({
   const pageRef = useRef(1)
   const [isLoading, setIsLoading] = useState(false)
   const observerTarget = useRef<HTMLDivElement>(null)
+  const sortedMovies = useMemo(
+    () => sortMovies(movies, sorting.value),
+    [movies, sorting]
+  )
 
   const handleSortingChange = (option: { value: string; label: string }) => {
     setSorting(option)
-    const newMovies = sortMovies(
-      removeDuplicateMovies(movies),
-      option.value,
-      originalMovieIds
-    )
-    setMovies(newMovies)
   }
 
   useEffect(() => {
@@ -63,10 +61,7 @@ export default function MovieGrid({
               ...response.results.map(m => m.id),
             ])
             setMovies(prev =>
-              sortMovies(
-                removeDuplicateMovies([...prev, ...response.results]),
-                sorting.value
-              )
+              sortMovies([...prev, ...response.results], sorting.value)
             )
             pageRef.current = nextPage
           } catch (error) {
@@ -99,7 +94,7 @@ export default function MovieGrid({
         className='grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4'
         data-testid='movie-grid'
       >
-        {movies?.map((movie, i) => (
+        {sortedMovies?.map((movie, i) => (
           <MovieCard key={`${movie.id}-${i}`} movie={movie} />
         ))}
       </div>

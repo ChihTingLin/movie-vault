@@ -34,50 +34,44 @@ export const sortMovies = (
 ): Movie[] => {
   switch (sorting) {
     case '':
-      return originalMovieIds
-        ? originalMovieIds
-            .map(id => movies.find((m: Movie) => m.id === id))
-            .filter(m => !!m)
-        : movies
+      return movies.toSorted((a, b) => {
+        const aIndex = originalMovieIds?.findIndex(id => id === a.id)
+        const bIndex = originalMovieIds?.findIndex(id => id === b.id)
+        return (aIndex ?? 0) - (bIndex ?? 0)
+      })
     case 'added_at_latest':
-      return movies.sort(
+      return movies.toSorted(
         (a, b) =>
           new Date(b.added_at || '').getTime() -
           new Date(a.added_at || '').getTime()
       )
     case 'added_at_oldest':
-      return movies.sort(
+      return movies.toSorted(
         (a, b) =>
           new Date(a.added_at || '').getTime() -
           new Date(b.added_at || '').getTime()
       )
     case 'popularity_desc':
-      return movies.sort((a, b) => b.popularity - a.popularity)
+      return movies.toSorted((a, b) => b.popularity - a.popularity)
     case 'popularity_asc':
-      return movies.sort((a, b) => a.popularity - b.popularity)
+      return movies.toSorted((a, b) => a.popularity - b.popularity)
     case 'release_date_latest':
-      return movies.sort(
+      return movies.toSorted(
         (a, b) =>
           new Date(b.release_date).getTime() -
           new Date(a.release_date).getTime()
       )
     case 'release_date_oldest':
-      return movies.sort(
+      return movies.toSorted(
         (a, b) =>
           new Date(a.release_date).getTime() -
           new Date(b.release_date).getTime()
       )
     case 'vote_average_desc':
-      return movies.sort((a, b) => b.vote_average - a.vote_average)
+      return movies.toSorted((a, b) => b.vote_average - a.vote_average)
     case 'vote_average_asc':
-      return movies.sort((a, b) => a.vote_average - b.vote_average)
+      return movies.toSorted((a, b) => a.vote_average - b.vote_average)
     default:
       return movies
   }
-}
-
-export const removeDuplicateMovies = (movies: Movie[]) => {
-  return movies.filter(
-    (movie, index, self) => index === self.findIndex(t => t.id === movie.id)
-  )
 }
