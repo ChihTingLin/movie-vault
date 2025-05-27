@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import 'cross-fetch/polyfill'
-import { mockMovie } from './__tests__/utils/mockData'
+import { mockMovie } from './__tests__/mocks/mockData'
 
 // 模擬 window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -19,7 +19,9 @@ Object.defineProperty(window, 'matchMedia', {
 
 const localStorageMock = (function () {
   let store: { [key: string]: string } = {
-    watchlist: JSON.stringify([mockMovie.id]),
+    watchlist: JSON.stringify([
+      { id: mockMovie.id, added_at: new Date().toISOString() },
+    ]),
   }
   return {
     getItem: jest.fn().mockImplementation(key => store[key] || null),

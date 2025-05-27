@@ -12,7 +12,7 @@ const config = {
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
-    '<rootDir>/__tests__/utils/',
+    '<rootDir>/__tests__/mocks/',
   ],
   moduleNameMapper: {
     // 處理模組別名

@@ -1,7 +1,6 @@
-import { act, fireEvent, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import MovieGrid from '../../components/MovieGrid'
-import { mockMovies } from '../utils/mockData'
-import { renderWithWatchlistProvider } from '../utils/testUtils'
+import { mockMovies } from '../mocks/mockData'
 
 const mockOnLoadMore = jest.fn().mockResolvedValue({
   results: mockMovies.map(m => ({ ...m, id: m.id + 1 })),
@@ -27,7 +26,7 @@ beforeAll(() => {
 describe('MovieGrid', () => {
   it('renders initial movies correctly', async () => {
     await act(async () => {
-      renderWithWatchlistProvider(
+      render(
         <MovieGrid
           initialMovies={mockMovies}
           totalPages={1}
@@ -41,7 +40,7 @@ describe('MovieGrid', () => {
 
   it('loads more movies when scrolled to the bottom', async () => {
     await act(async () => {
-      renderWithWatchlistProvider(
+      render(
         <MovieGrid
           initialMovies={mockMovies}
           totalPages={2}
@@ -58,7 +57,7 @@ describe('MovieGrid', () => {
 
   it('renders loading state when loading more movies', async () => {
     await act(async () => {
-      renderWithWatchlistProvider(
+      render(
         <MovieGrid
           initialMovies={mockMovies}
           totalPages={2}

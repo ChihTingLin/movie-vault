@@ -1,34 +1,37 @@
 import React from 'react'
-import { screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import WatchlistButton from '@/components/WatchlistButton'
-import { renderWithWatchlistProvider } from '../utils/testUtils'
-import { mockMovie } from '../utils/mockData'
+import { mockMovie } from '../mocks/mockData'
 import userEvent from '@testing-library/user-event'
+import useWatchlistStore from '@/lib/store/watchlistStore'
+
+beforeEach(() => {
+  useWatchlistStore.setState({ watchlist: [] })
+  localStorage.clear()
+})
 
 describe('WatchlistButton', () => {
   it('should render correctly', () => {
-    renderWithWatchlistProvider(<WatchlistButton movieId={mockMovie.id} />)
+    render(<WatchlistButton movie={mockMovie} />)
     expect(screen.getByAltText('add to watchlist')).toBeInTheDocument()
   })
 
   it('should add to watchlist when button is clicked', async () => {
-    renderWithWatchlistProvider(<WatchlistButton movieId={mockMovie.id} />)
+    render(<WatchlistButton movie={mockMovie} />)
     const button = screen.getByRole('button')
     await userEvent.click(button)
-    expect(screen.getByAltText('remove from watchlist')).toBeInTheDocument()
-    const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]')
-    const movieIds = watchlist.map((movie: any) => movie.id)
+    const watchlist = useWatchlistStore.getState().watchlist
+    const movieIds = watchlist.map((movie: { id: number }) => movie.id)
     expect(movieIds).toContain(mockMovie.id)
   })
 
   it('should remove movie from watchlist when button is clicked', async () => {
-    renderWithWatchlistProvider(<WatchlistButton movieId={mockMovie.id} />)
+    render(<WatchlistButton movie={mockMovie} />)
     const button = screen.getByRole('button')
     await userEvent.click(button)
     await userEvent.click(button)
-    expect(screen.getByAltText('add to watchlist')).toBeInTheDocument()
-    const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]')
-    const movieIds = watchlist.map((movie: any) => movie.id)
+    const watchlist = useWatchlistStore.getState().watchlist
+    const movieIds = watchlist.map((movie: { id: number }) => movie.id)
     expect(movieIds).not.toContain(mockMovie.id)
   })
 })

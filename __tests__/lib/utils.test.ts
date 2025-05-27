@@ -1,5 +1,5 @@
 import { sortMovies } from '@/lib/utils'
-import { mockMovies } from '../utils/mockData'
+import { mockMovies } from '../mocks/mockData'
 
 const originalMovieIds = mockMovies.map(movie => movie.id)
 describe('sortMovies', () => {

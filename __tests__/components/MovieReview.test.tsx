@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import MovieReview from '@/components/MovieReview'
-import { mockMovieReview } from '../utils/mockData'
+import { mockMovieReview } from '../mocks/mockData'
 import userEvent from '@testing-library/user-event'
 
 describe('MovieReview', () => {
