@@ -18,6 +18,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
     []
   )
   const vote = Math.floor(movie.vote_average * 10)
+
   return (
     <div className='relative group rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow'>
       <Link href={`/movie/${movie.id}`}>
@@ -28,7 +29,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
                 ? `https://image.tmdb.org/t/p/w400${movie.poster_path}`
                 : '/images/placeholder-poster.svg'
             }
-            alt={movie.title}
+            alt={movie.title || '電影海報'}
             fill
             sizes='(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw'
             className='object-cover'
@@ -68,7 +69,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
         </div>
       </Link>
       <div className='absolute top-2 right-2'>
-        <WatchlistButton movieId={movie.id} />
+        <WatchlistButton movie={movie} />
       </div>
     </div>
   )

@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
 import Image from 'next/image'
-import { WatchlistProvider } from '@/contexts/WatchlistContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,7 +33,7 @@ export default function RootLayout({
             />
           </Link>
         </header>
-        <WatchlistProvider>{children}</WatchlistProvider>
+        {children}
       </body>
     </html>
   )

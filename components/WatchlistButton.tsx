@@ -2,20 +2,23 @@
 
 import { Button } from './ui/button'
 import Image from 'next/image'
-import { useWatchlist } from '@/contexts/WatchlistContext'
+import useWatchlistStore from '@/lib/store/watchlistStore'
+import { Movie } from '@/types/movie'
+
 interface WatchlistButtonProps {
-  movieId: number
+  movie: Movie
 }
 
-export default function WatchlistButton({ movieId }: WatchlistButtonProps) {
-  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist()
-  const inWatchlist = isInWatchlist(movieId)
+export default function WatchlistButton({ movie }: WatchlistButtonProps) {
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } =
+    useWatchlistStore()
+  const inWatchlist = isInWatchlist(movie.id)
 
   const toggleWatchlist = () => {
-    if (isInWatchlist(movieId)) {
-      removeFromWatchlist(movieId)
+    if (isInWatchlist(movie.id)) {
+      removeFromWatchlist(movie.id)
     } else {
-      addToWatchlist(movieId)
+      addToWatchlist(movie)
     }
   }
   return (

@@ -59,7 +59,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
               <h1 className='text-4xl font-bold md:text-white md:text-shadow-sm md:text-shadow-black'>
                 {movie.title}
               </h1>
-              <WatchlistButton movieId={movie.id} />
+              <WatchlistButton movie={movie} />
             </div>
 
             {movie.tagline && (

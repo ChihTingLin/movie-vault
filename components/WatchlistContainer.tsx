@@ -3,14 +3,14 @@
 import { Movie } from '@/types/movie'
 import MovieCard from '@/components/MovieCard'
 import MovieFilter from './MovieSorting'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { sortMovies } from '@/lib/utils'
-import { useWatchlist } from '@/contexts/WatchlistContext'
 import MovieRoulette from './MovieRoulette'
+import useWatchlistStore from '@/lib/store/watchlistStore'
 
 export default function WatchlistContainer() {
-  const { movieDetails, loading, getWatchlistDetails, watchlist } =
-    useWatchlist()
+  const { watchlist, loading, getWatchlistDetails, detailsMap } =
+    useWatchlistStore()
   const [selectedSorting, setSelectedSorting] = useState<{
     label: string
     value: string
@@ -19,40 +19,37 @@ export default function WatchlistContainer() {
     value: 'added_at_latest',
   })
   const [sortedMovies, setSortedMovies] = useState<Movie[]>([])
+  const movies = useMemo(
+    () => watchlist.map(m => ({ ...m, ...detailsMap[m.id] })),
+    [watchlist, detailsMap]
+  )
   const originalMovieIds = watchlist.map(m => m.id)
 
   const handleSortingChange = (sorting: { label: string; value: string }) => {
     setSelectedSorting(sorting)
-    setSortedMovies(movies =>
-      sortMovies(movies, sorting.value, originalMovieIds)
-    )
+    setSortedMovies(sortMovies(movies, sorting.value, originalMovieIds))
   }
 
   useEffect(() => {
-    getWatchlistDetails().then(() => {
-      setSortedMovies(movieDetails)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getWatchlistDetails()
   }, [getWatchlistDetails, setSortedMovies])
 
   useEffect(() => {
-    setSortedMovies(
-      sortMovies(movieDetails, selectedSorting.value, originalMovieIds)
-    )
-  }, [movieDetails, selectedSorting])
+    setSortedMovies(sortMovies(movies, selectedSorting.value, originalMovieIds))
+  }, [movies, selectedSorting, originalMovieIds])
 
   return (
     <>
       {loading && (
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto' />
       )}
-      {!loading && movieDetails.length === 0 && (
+      {!loading && sortedMovies.length === 0 && (
         <p className='text-center'>您的待看清單目前是空的。</p>
       )}
       <div className='flex justify-between items-center mb-4'>
         <div>
-          {!loading && movieDetails.length > 0 && (
-            <MovieRoulette movies={movieDetails} />
+          {!loading && sortedMovies.length > 0 && (
+            <MovieRoulette movies={sortedMovies} />
           )}
         </div>
         {sortMovies.length > 0 && (
