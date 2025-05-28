@@ -1,4 +1,8 @@
-import { Movie, MovieDetail, MovieReviewList } from '@/types/movie'
+import {
+  MovieListSchema,
+  MovieDetailSchema,
+  MovieReviewListSchema,
+} from '@/types/movie'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 
@@ -21,32 +25,32 @@ export async function getMovieListByGenre(genreId: number, page = 1) {
   const response = await fetchWithToken(
     `/discover/movie?with_genres=${genreId}&page=${page}`
   )
-  return response.json()
+  const data = await response.json()
+  const parsed = MovieListSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error('Invalid movie data')
+  }
+  return parsed.data
 }
 
-export async function searchMovies(
-  query: string,
-  page = 1
-): Promise<{
-  page: number
-  results: Movie[]
-  total_pages: number
-  total_results: number
-}> {
+export async function searchMovies(query: string, page = 1) {
   const response = await fetchWithToken(
     `/search/movie?query=${encodeURIComponent(
       query
     )}&page=${page}&language=zh-TW`
   )
-
   if (!response.ok) {
     throw new Error('Failed to fetch movies')
   }
-
-  return response.json()
+  const data = await response.json()
+  const parsed = MovieListSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error('Invalid movie data')
+  }
+  return parsed.data
 }
 
-export async function getMovieDetails(id: number): Promise<MovieDetail> {
+export async function getMovieDetails(id: number) {
   const response = await fetchWithToken(
     `/movie/${id}?append_to_response=credits,videos&language=zh-TW`
   )
@@ -55,26 +59,36 @@ export async function getMovieDetails(id: number): Promise<MovieDetail> {
     throw new Error('Failed to fetch movie details')
   }
 
-  return response.json()
+  const data = await response.json()
+  const parsed = MovieDetailSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error('Invalid movie data')
+  }
+  return parsed.data
 }
 
-export async function getMovieReviews(id: number): Promise<MovieReviewList> {
+export async function getMovieReviews(id: number) {
   const response = await fetchWithToken(`/movie/${id}/reviews`)
-  return response.json()
+  const data = await response.json()
+  const parsed = MovieReviewListSchema.safeParse(data)
+  console.log(data, parsed)
+  if (!parsed.success) {
+    throw new Error('Invalid movie data')
+  }
+  return parsed.data
 }
 
-export async function getPopularMovies(page = 1): Promise<{
-  results: Movie[]
-  total_pages: number
-  total_results: number
-}> {
+export async function getPopularMovies(page = 1) {
   const response = await fetchWithToken(
     `/movie/popular?&page=${page}&language=zh-TW`
   )
-
   if (!response.ok) {
     throw new Error('Failed to fetch popular movies')
   }
-
-  return response.json()
+  const data = await response.json()
+  const parsed = MovieListSchema.safeParse(data)
+  if (!parsed.success) {
+    throw new Error('Invalid movie data')
+  }
+  return parsed.data
 }
